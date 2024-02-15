@@ -1,0 +1,321 @@
+package edu.uwm.cs351;
+
+import java.util.function.Consumer;
+
+/**
+ * A robot implemented with a linked list
+ * using sequence methods.
+ */
+public class LinkedPartSeq implements Robot, Cloneable {
+	private static Consumer<String> reporter = (s) -> System.out.println("Invariant error: "+ s);
+	
+	private boolean report(String error) {
+		reporter.accept(error);
+		System.out.println("DS: " + this);
+		return false;
+	}
+
+	// TODO data structure: Node class and fields
+	
+	private boolean wellFormed() {
+		// Check the invariant.
+		// 1. The list has no cycles
+		// 2. The precursor field is null or points to a node in the list.
+		// 3. manyNodes accurately contains the number of nodes in the list (starting at head).
+		// 4. No function or part is null
+		// 5. The "tail" pointer is consistent.
+		
+		// The first check is given to you:
+		// It uses Floyd's Tortoise & Hare algorithm
+		if (head != null) {
+			Node slow = head;
+			Node fast = head.next;
+			while (fast != null) {
+				if (slow == fast) return report("Found cycle in list");
+				slow = slow.next;
+				fast = fast.next;
+				if (fast != null) fast = fast.next;
+			}
+		}
+		
+		// TODO
+		
+		// If no problems discovered, return true
+		return true;
+	}
+
+	// This is only for testing the invariant.  Do not change!
+	private LinkedPartSeq(boolean testInvariant) { }
+
+	/**
+	 * Create an empty robot..
+	 */
+	public LinkedPartSeq() {
+		//TODO.  Make sure that you assert the invariant at the end only
+	}
+	
+	@Override // implementation
+	public String toString() {
+		// don't assert invariant, so we can use this for testing/debugging
+		StringBuilder sb = new StringBuilder();
+		boolean foundPre = precursor == null;
+		boolean foundTail = tail == null && head == null;
+		Node lag = null;
+		Node fast = head;
+		sb.append("[");
+		for (Node p=head; p != null; p = p.next) {
+			if (p == precursor) foundPre = true;
+			if (fast != null) fast = fast.next;
+			if (p != head) sb.append(", ");
+			if (lag == precursor) {
+				sb.append("*");
+				foundPre = true;
+			}
+			sb.append(p.function);
+			sb.append(":");
+			sb.append(p.data);
+			if (p == fast) {
+				sb.append(" ???");
+				break;
+			}
+			if (p == tail) {
+				foundTail = true;
+				sb.append("!");
+			}
+			lag = p;
+			if (fast != null) fast = fast.next;
+		}
+		sb.append("]:" + manyNodes + (foundPre ? "" : "*?") + (foundTail ? "" : "!?"));
+		return sb.toString();
+	}
+		
+	/**
+	 * Return the number of Parts in the robot.
+	 * @return number of (non-null) Parts
+	 */
+	public int size() {
+		assert wellFormed() : "invariant broken in size";
+		return manyNodes;
+	}
+
+	
+	/// Cursor methods
+		
+	// TODO Implement model field "cursor" (i.e., "getCursor()")
+	
+	/**
+	 * Move the cursor to the beginning, first Part in the robot,
+	 * if any.
+	 */
+	public void start() {
+		start(null); // let other method handle the invariant
+	}
+	
+	// TODO: A private helper method.  Define once you find yourself
+	// doing the same thing three times.
+	
+	/**
+	 * Start running through all parts with the given function.
+	 * @param function kind of parts to access, may be null (any part)
+	 */
+	public void start(String function) {
+		// TODO: don't forget to assert the invariant twice: before and after
+	}
+	
+	/**
+	 * Return whether we have a current Part
+	 * @return whether there is a current Part.
+	 */
+	public boolean isCurrent() {
+		assert wellFormed() : "invariant broken in isCurrent";
+		// TODO: one liner since we can assume the invariant
+	}
+	
+	/**
+	 * Return the current Part.
+	 * @exception IllegalStateException if there is no current Part
+	 * @return the current Part, never null.
+	 */
+	public Part getCurrent() {
+		assert wellFormed() : "invariant broken in getCurrent";
+		// TODO: simple since we can assume the invariant
+	}
+	
+	/**
+	 * Move on to the next Part (of the current function), if any. 
+	 * If there are no more Parts, then afterwards, {@link #isCurrent()}
+	 * will return false.
+	 * @throws IllegalStateException if there is no current Part before this operation starts
+	 */
+	public void advance() {
+		// TODO: Don't forget to check the invariant before and after!
+	}
+	
+	/**
+	 * Remove the current Part, advancing the cursor to the next Part.
+	 * @throws IllegalStateException if there is no current Part.
+	 */
+	public void removeCurrent() {
+		// TODO: Don't forget to check the invariant before and after!
+		// Hint: this is a constant-time method.  Rely on the invariant.
+	}
+	
+	/**
+	 * Add a part before the current element.  If there is no current element,
+	 * then add at the beginning.  There must have been a function
+	 * defined (See [@link #start(String)}).
+	 * If successfully added, the newly added part will be current.
+	 * @throws IllegalStateException if no function defined, or if the function was null
+	 * @param p part to add at this spot, must not be null.
+	 */
+	public void addBefore(Part p) {
+		assert wellFormed() : "invariant broken in addBefore";
+		// TODO
+		assert wellFormed() : "invariant broken by addBefore";
+	}
+	
+	/**
+	 * Add a part after the current element.  If there is no current element,
+	 * then add at the end.  There must have been a function
+	 * defined (See [@link #start(String)}).
+	 * If successfully added, the newly added part will be current.
+	 * @throws IllegalStateException if no function defined, or if the function was null
+	 * @param p part to add at this spot, must not be null.
+	 */
+	public void addAfter(Part p) {
+		// TODO: (remember the invariant!)
+	}
+	
+	@Override // decorate
+	public LinkedPartSeq clone() {
+		assert wellFormed() : "invariant broken in clone";
+		LinkedPartSeq result;
+		try {
+			result = (LinkedPartSeq) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError("forgot to implement cloneable?");
+		}
+		// TODO: extra work
+		assert result.wellFormed() : "invariant broken in result of clone";
+		assert wellFormed() : "invariant broken by clone";
+		return result;
+	}
+	
+	@Override // required
+	public boolean addPart(String function, Part part) {
+		assert wellFormed() : "invariant broken in addPart";
+		// TODO: mainly do the work with public methods
+		assert wellFormed() : "invariant broken by addPart";
+		return true;
+	}
+
+	@Override // required
+	public Part removePart(String function) {
+		assert wellFormed() : "invariant broken in removePart";
+		Part result = null;
+		// TODO: mainly do the work with public methods
+		assert wellFormed() : "invariant broken by removePart";
+		return result;
+	}
+
+
+	@Override // required
+	public Part getPart(String func, int index) {
+		return null;
+	}
+
+	/**
+	 * Class for internal testing.  Do not modify.
+	 * Do not use in client/application code
+	 */
+	public static class Spy {
+		/**
+		 * A public version of the data structure's internal node class.
+		 * This class is only used for testing.
+		 */
+		public static class Node extends LinkedPartSeq.Node {
+			/**
+			 * Create a node with null data and null next fields.
+			 */
+			public Node() {
+				this(null, null, null);
+			}
+			/**
+			 * Create a node with the given values
+			 * @param p data for new node, may be null
+			 * @param n next for new node, may be null
+			 */
+			public Node(String f, Part p, Node n) {
+				super(null, null);
+				this.function = f;
+				this.data = p;
+				this.next = n;
+			}
+		}
+		
+		/**
+		 * Return the sink for invariant error messages
+		 * @return current reporter
+		 */
+		public Consumer<String> getReporter() {
+			return reporter;
+		}
+
+		/**
+		 * Change the sink for invariant error messages.
+		 * @param r where to send invariant error messages.
+		 */
+		public void setReporter(Consumer<String> r) {
+			reporter = r;
+		}
+
+		/**
+		 * Create a node for testing.
+		 * @param f function, may be null
+		 * @param p Part, may be null
+		 * @param n next node, may be null
+		 * @return newly created test node
+		 */
+		public Node newNode(String f, Part p, Node n) {
+			return new Node(f, p, n);
+		}
+		
+		/**
+		 * Change a node's next field
+		 * @param n1 node to change, must not be null
+		 * @param n2 node to point to, may be null
+		 */
+		public void setNext(Node n1, Node n2) {
+			n1.next = n2;
+		}
+		
+		/**
+		 * Create an instance of the ADT with given data structure.
+		 * This should only be used for testing.
+		 * @param h head of linked list
+		 * @param s size
+		 * @param p precursor
+		 * @param t tail of linked list
+		 * @return instance of LinkedPartSeq with the given field values.
+		 */
+		public LinkedPartSeq create(Node h, int s, Node p, Node t) {
+			LinkedPartSeq result = new LinkedPartSeq(false);
+			result.head = h;
+			result.manyNodes = s;
+			result.precursor = p;
+			result.tail = t;
+			return result;
+		}
+		
+		/**
+		 * Return whether the wellFormed routine returns true for the argument
+		 * @param s seq to check.
+		 * @return
+		 */
+		public boolean wellFormed(LinkedPartSeq s) {
+			return s.wellFormed();
+		}
+
+		
+	}
+}
