@@ -8,18 +8,24 @@ This is a homework assignment at University of Wisconsin-Milwaukee.
 ### Focus
 
 #### What is this homework assignment about?
+This homework assignment involves implementing a Sequence ADT using a linked list data structure.
 
 ### Gather
 
 #### What do I know?  What do I need to know that's new?
+I know how linked list work, I need to get myself clear with the cursor, precursor concepts.
 
 ### Brainstorm
 
 #### What are some ideas for solving this homework assignment?
+following the what to do is the best way to proceed in the assignment. re doing/checking the activity might be a good start.
 
 ### Plan
 
 #### What will I work on first after I finish this planning part?
+1. I will first work on the well formed first because that ensures all the other code work correctly.
+2. then size, start, isCurrent and getCurrent
+3. then follow the steps mentioned in the homework statement.
 
 
 *The preceding steps should be completed and committed by the

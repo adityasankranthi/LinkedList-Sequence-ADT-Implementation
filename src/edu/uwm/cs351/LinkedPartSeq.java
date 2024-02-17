@@ -16,6 +16,10 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	}
 
 	// TODO data structure: Node class and fields
+	private Node head;
+	private Node precursor;
+	private Node tail;
+	private int manyNodes;
 	
 	private boolean wellFormed() {
 		// Check the invariant.
@@ -129,6 +133,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public boolean isCurrent() {
 		assert wellFormed() : "invariant broken in isCurrent";
 		// TODO: one liner since we can assume the invariant
+		return false;
 	}
 	
 	/**
@@ -139,6 +144,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public Part getCurrent() {
 		assert wellFormed() : "invariant broken in getCurrent";
 		// TODO: simple since we can assume the invariant
+		return null;
 	}
 	
 	/**
@@ -223,6 +229,18 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public Part getPart(String func, int index) {
 		return null;
 	}
+	
+	private static class Node{
+		String function;
+		Part data;
+		Node next = null;
+		
+		public Node(Part p, Node n) {
+			this.data = p;
+			this.next = n;
+		}
+		
+	}
 
 	/**
 	 * Class for internal testing.  Do not modify.
@@ -234,6 +252,8 @@ public class LinkedPartSeq implements Robot, Cloneable {
 		 * This class is only used for testing.
 		 */
 		public static class Node extends LinkedPartSeq.Node {
+			
+			
 			/**
 			 * Create a node with null data and null next fields.
 			 */
