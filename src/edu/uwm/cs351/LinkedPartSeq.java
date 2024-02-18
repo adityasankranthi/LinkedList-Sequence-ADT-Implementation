@@ -20,6 +20,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	private Node precursor;
 	private Node tail;
 	private int manyNodes;
+	private String function;
 	
 	private boolean wellFormed() {
 		// Check the invariant.
@@ -88,6 +89,10 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	    } else {
 	        if (manyNodes > 0) return report("Tail pointer is not consistent");
 	    }
+	    
+	    Node cur = precursor == null ? head : precursor.next;
+	    if (cur != null && function != null && !function.equals(cur.function)) 
+	    	return report ("current element function '" + cur.function + "' doesn't match '" + function +"'");
 		
 		// If no problems discovered, return true
 		return true;
@@ -101,6 +106,12 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	 */
 	public LinkedPartSeq() {
 		//TODO.  Make sure that you assert the invariant at the end only
+		head = null;
+		precursor = null;
+		tail = null;
+		manyNodes = 0;
+		function = null;
+		assert wellFormed(): "invariant broken by the constructor";
 	}
 	
 	@Override // implementation
@@ -169,6 +180,23 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	 */
 	public void start(String function) {
 		// TODO: don't forget to assert the invariant twice: before and after
+		assert wellFormed() : "invariant broken in start";
+		precursor = null;
+		if (head != null) {
+			Node lag = null;
+		    for (Node cur = head; cur != null; lag = cur, cur = cur.next) {
+		    	if (this.function.equals(function)) {
+		    		break;
+		    	}
+		    }
+		    precursor = lag;
+		}
+		assert wellFormed() : "invariant broken by start";
+	}
+	
+	private Node getCursor() {
+		if (precursor == null) return head;
+		else return precursor.next;
 	}
 	
 	/**
@@ -178,7 +206,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public boolean isCurrent() {
 		assert wellFormed() : "invariant broken in isCurrent";
 		// TODO: one liner since we can assume the invariant
-		return false;
+		return getCursor() != null;
 	}
 	
 	/**
@@ -187,9 +215,11 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	 * @return the current Part, never null.
 	 */
 	public Part getCurrent() {
-		assert wellFormed() : "invariant broken in getCurrent";
 		// TODO: simple since we can assume the invariant
-		return null;
+		assert wellFormed() : "invariant broken in getCurrent";
+		if (!isCurrent()) throw new IllegalStateException("no current element");
+		return getCursor().data;
+		
 	}
 	
 	/**
@@ -222,6 +252,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public void addBefore(Part p) {
 		assert wellFormed() : "invariant broken in addBefore";
 		// TODO
+		if (function == null) throw new IllegalStateException("function is not defined or is null");
 		assert wellFormed() : "invariant broken by addBefore";
 	}
 	
@@ -235,6 +266,9 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	 */
 	public void addAfter(Part p) {
 		// TODO: (remember the invariant!)
+		assert wellFormed() : "invariant broken in addAfter";
+		if (function == null) throw new IllegalStateException("function is not defined or is null");
+		assert wellFormed() : "invariant broken by addAfter";
 	}
 	
 	@Override // decorate
