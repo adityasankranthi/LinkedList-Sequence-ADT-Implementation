@@ -31,6 +31,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 		
 		// The first check is given to you:
 		// It uses Floyd's Tortoise & Hare algorithm
+		
 		if (head != null) {
 			Node slow = head;
 			Node fast = head.next;
@@ -43,6 +44,50 @@ public class LinkedPartSeq implements Robot, Cloneable {
 		}
 		
 		// TODO
+	    // 2. The precursor field is null or points to a node in the list.
+		if (precursor != null) {
+			Node temp = head;
+		    for (; temp != null; temp = temp.next) {
+		        if (temp == precursor) {
+		            break;
+		        }
+		    }
+		    if (temp == null) {
+		        return report("Precursor does not point to a node in the list");
+		    }
+		}
+
+	    // 3. manyNodes accurately contains the number of nodes in the list (starting at head).
+	    int count = 0;
+	    for (Node current = head; current !=null; current = current.next) {
+	    	count++;
+	    }
+	    if (count != manyNodes) {
+	        return report("manyNodes does not accurately count the number of nodes in the list");
+	    }
+	    
+	    // 4. No function or part is null
+	    for (Node cur = head; cur != null; cur = cur.next) {
+	        if (cur.function == null || cur.data == null) {
+	            return report("Null function or part found");
+	        }
+	    }
+
+	    // 5. The "tail" pointer is consistent.
+//	    if (tail == null && manyNodes > 0) report ("Tail pointer is not consistent");
+	    
+	    if (tail != null) {
+	        if (head == null) return report("Tail pointer is not consistent");
+	        Node lastNode = head;
+	        for (; lastNode.next != null; lastNode = lastNode.next) {
+	            // Iterating through the linked list until the last node is reached
+	        }
+	        if (lastNode != tail) {
+	            return report("Tail pointer is not consistent");
+	        }
+	    } else {
+	        if (manyNodes > 0) return report("Tail pointer is not consistent");
+	    }
 		
 		// If no problems discovered, return true
 		return true;
