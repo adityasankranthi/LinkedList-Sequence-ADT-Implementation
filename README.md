@@ -36,14 +36,17 @@ Friday 10pm deadline.*
 ### Review
 
 #### Did I correctly anticipate the difficulties?
+I knew I was going to use the linkedList methods in the robot parts, therefore I was able to anticipate the difficulties.
 
 #### How did the plan go?
-
+Sticking to what you need to do in the homework worked pretty good, I was aware which part of the code was going wrong because I was working with one thing at a time.
 ### Preview
 
 #### What should I do differently for next week's homework assignment?
+like I state in all assignments I want to start as early as possible.
 
 #### Do I need more resources?
+No, I did not need any extra resources other than the textbook and the lectures.
 
 ## Optional Feedback
 
