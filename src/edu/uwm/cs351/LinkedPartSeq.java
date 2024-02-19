@@ -162,6 +162,10 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	/// Cursor methods
 		
 	// TODO Implement model field "cursor" (i.e., "getCursor()")
+	private Node getCursor() {
+		if (precursor == null) return head;
+		else return precursor.next;
+	}
 	
 	/**
 	 * Move the cursor to the beginning, first Part in the robot,
@@ -181,23 +185,20 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public void start(String function) {
 		// TODO: don't forget to assert the invariant twice: before and after
 		assert wellFormed() : "invariant broken in start";
-		precursor = null;
-		if (head != null) {
-			Node lag = null;
+		this.function = function;
+		Node lag = null;
+	    precursor = lag;
+		if (head != null && function != null) {
 		    for (Node cur = head; cur != null; lag = cur, cur = cur.next) {
-		    	if (this.function.equals(function)) {
+		    	if (this.function.equals(cur.function) && cur != head) {
 		    		break;
 		    	}
 		    }
-		    precursor = lag;
 		}
+	    precursor = lag;
 		assert wellFormed() : "invariant broken by start";
 	}
 	
-	private Node getCursor() {
-		if (precursor == null) return head;
-		else return precursor.next;
-	}
 	
 	/**
 	 * Return whether we have a current Part
@@ -252,8 +253,32 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public void addBefore(Part p) {
 		assert wellFormed() : "invariant broken in addBefore";
 		// TODO
+		if (p == null) throw new NullPointerException("Part can't be null");
 		if (function == null) throw new IllegalStateException("function is not defined or is null");
-		assert wellFormed() : "invariant broken by addBefore";
+	    // Create a new node with the provided part
+	    Node newNode = new Node(p, null);
+	    newNode.function = this.function;
+	    if (precursor == null) {
+	        // If there's no precursor, insert newNode at the beginning
+	        newNode.next = head;
+	        head = newNode;
+	        if (tail == null) {
+	            tail = newNode;
+	        }
+	    } else {
+	        // If there's a precursor, insert newNode before the current node
+	    	if (precursor.function != this.function) {
+	    		precursor= null;
+	    		newNode.next = head;
+	    		head = newNode;
+	    	}
+	    	else {
+	    		
+	    	}
+	    }
+	    
+	    manyNodes++; // Increment the count of nodes
+	    assert wellFormed() : "invariant broken by addBefore";
 	}
 	
 	/**
