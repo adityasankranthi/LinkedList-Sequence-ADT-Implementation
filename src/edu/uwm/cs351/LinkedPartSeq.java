@@ -190,7 +190,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	    precursor = lag;
 		if (head != null && function != null) {
 		    for (Node cur = head; cur != null; lag = cur, cur = cur.next) {
-		    	if (this.function.equals(cur.function) && cur != head) {
+		    	if (this.function.equals(cur.function)) {
 		    		break;
 		    	}
 		    }
@@ -230,7 +230,37 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	 * @throws IllegalStateException if there is no current Part before this operation starts
 	 */
 	public void advance() {
+		assert wellFormed() : "invariant broken in advance";
 		// TODO: Don't forget to check the invariant before and after!
+		// Check if there is a current part before advancing
+	    if (!isCurrent()) {
+	        throw new IllegalStateException("No current Part before advancing.");
+	    }
+
+//	    // Move the cursor to the next node with the same function
+//	    Node lag = null;
+//		if (head != null && function != null) {
+//			 Node cur;
+//			if (precursor == null)  cur = head;
+//			else  cur = precursor;
+//		    for (; cur != null; lag = cur, cur = cur.next) {
+//		    	if (this.function.equals(cur.function) && cur != head) {
+//		    		break;
+//		    	}
+//		    }
+//		    precursor = lag;
+//		}
+//		else precursor = head;
+
+	    // If cursor is null, there are no more parts with the same function
+	    // Update the function to null and set precursor to null
+	    precursor = getCursor();
+	    if (this.function != null) {
+	    	if (getCursor() != null && getCursor().function != this.function) {
+		    	precursor = tail;
+	    	}
+	    }
+		assert wellFormed() : "invariant broken by advance";
 	}
 	
 	/**
@@ -267,13 +297,14 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	        }
 	    } else {
 	        // If there's a precursor, insert newNode before the current node
-	    	if (precursor.function != this.function) {
+	    	if (getCursor() == null) {
 	    		precursor= null;
 	    		newNode.next = head;
 	    		head = newNode;
 	    	}
 	    	else {
-	    		
+	    		newNode.next = precursor.next;
+	    		precursor.next = newNode;
 	    	}
 	    }
 	    
