@@ -236,24 +236,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	    if (!isCurrent()) {
 	        throw new IllegalStateException("No current Part before advancing.");
 	    }
-
-//	    // Move the cursor to the next node with the same function
-//	    Node lag = null;
-//		if (head != null && function != null) {
-//			 Node cur;
-//			if (precursor == null)  cur = head;
-//			else  cur = precursor;
-//		    for (; cur != null; lag = cur, cur = cur.next) {
-//		    	if (this.function.equals(cur.function) && cur != head) {
-//		    		break;
-//		    	}
-//		    }
-//		    precursor = lag;
-//		}
-//		else precursor = head;
-
-	    // If cursor is null, there are no more parts with the same function
-	    // Update the function to null and set precursor to null
 	    precursor = getCursor();
 	    if (this.function != null) {
 	    	if (getCursor() != null && getCursor().function != this.function) {
@@ -324,7 +306,31 @@ public class LinkedPartSeq implements Robot, Cloneable {
 		// TODO: (remember the invariant!)
 		assert wellFormed() : "invariant broken in addAfter";
 		if (function == null) throw new IllegalStateException("function is not defined or is null");
-		assert wellFormed() : "invariant broken by addAfter";
+
+	    // Create a new node with the provided part
+	    Node newNode = new Node(p, null);
+	    newNode.function = this.function;
+	    if (manyNodes == 0) {
+	        // If there's no precursor, insert newNode at the beginning
+	        newNode.next = head;
+	        head = newNode;
+	    }
+	    else if (getCursor() == null) {
+    		newNode.next = null;
+    		precursor.next = newNode;
+	    }
+	    else {
+	        // If there's a precursor, insert newNode after the current node
+    		newNode.next = getCursor().next;
+    		getCursor().next = newNode;
+    		precursor = getCursor();
+	        // Update tail if necessary
+	    }
+        if (newNode.next == null) {
+            tail = newNode;
+        }
+	    manyNodes++; // Increment the count of nodes
+	    assert wellFormed() : "invariant broken by addAfter";
 	}
 	
 	@Override // decorate
