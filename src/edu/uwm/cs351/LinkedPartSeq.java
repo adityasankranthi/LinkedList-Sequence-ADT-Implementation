@@ -75,8 +75,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	    }
 
 	    // 5. The "tail" pointer is consistent.
-//	    if (tail == null && manyNodes > 0) report ("Tail pointer is not consistent");
-	    
 	    if (tail != null) {
 	        if (head == null) return report("Tail pointer is not consistent");
 	        Node lastNode = head;
@@ -371,17 +369,51 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	
 	@Override // decorate
 	public LinkedPartSeq clone() {
-		assert wellFormed() : "invariant broken in clone";
-		LinkedPartSeq result;
-		try {
-			result = (LinkedPartSeq) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new AssertionError("forgot to implement cloneable?");
-		}
-		// TODO: extra work
-		assert result.wellFormed() : "invariant broken in result of clone";
-		assert wellFormed() : "invariant broken by clone";
-		return result;
+	    assert wellFormed() : "invariant broken in clone";
+	    LinkedPartSeq result;
+	    try {
+	        result = (LinkedPartSeq) super.clone();
+	    } catch (CloneNotSupportedException e) {
+	        throw new AssertionError("forgot to implement cloneable?");
+	    }
+
+	    // Clone each node and its data
+	    if (head != null) {
+	        Node originalNode = head;
+	        Node clonedNode = new Node(originalNode.data, null);
+	        result.head = clonedNode;
+	        result.head.function = originalNode.function;
+
+	        while (originalNode.next != null) {
+	            originalNode = originalNode.next;
+	            clonedNode.next = new Node(originalNode.data, null);
+	            clonedNode.next.function = originalNode.function;
+	            clonedNode = clonedNode.next;
+	        }
+
+	        // Update tail pointer
+	        result.tail = clonedNode;
+	    }
+
+	    // Clone precursor
+	    if (precursor != null) {
+	        Node originalNode = head;
+	        Node clonedNode = result.head;
+	        while (originalNode != null && originalNode != precursor) {
+	            originalNode = originalNode.next;
+	            clonedNode = clonedNode.next;
+	        }
+	        result.precursor = clonedNode;
+	    } else {
+	        result.precursor = null;
+	    }
+
+	    // Clone other fields
+	    result.manyNodes = this.manyNodes;
+	    result.function = this.function;
+	    assert result.wellFormed() : "invariant broken in result of clone";
+	    assert wellFormed() : "invariant broken by clone";
+	    return result;
 	}
 	
 	@Override // required
