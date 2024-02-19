@@ -237,7 +237,15 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	    precursor = getCursor();
 	    if (this.function != null) {
 	    	if (getCursor() != null && getCursor().function != this.function) {
-		    	precursor = tail;
+	    		Node lag = null;
+	    		if (head != null && function != null) {
+	    		    for (Node cur = getCursor(); cur != null; lag = cur, cur = cur.next) {
+	    		    	if (this.function.equals(cur.function)) {
+	    		    		break;
+	    		    	}
+	    		    }
+	    		}
+	    	    if (lag!=null) precursor = lag;
 	    	}
 	    }
 		assert wellFormed() : "invariant broken by advance";
@@ -420,6 +428,12 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public boolean addPart(String function, Part part) {
 		assert wellFormed() : "invariant broken in addPart";
 		// TODO: mainly do the work with public methods
+		if (function == null|| part == null) throw new NullPointerException("function or part is null");
+		start(function);
+		while (isCurrent()) {
+            advance(); // Move to the next part
+        }
+		addAfter(part);
 		assert wellFormed() : "invariant broken by addPart";
 		return true;
 	}
@@ -429,6 +443,18 @@ public class LinkedPartSeq implements Robot, Cloneable {
 		assert wellFormed() : "invariant broken in removePart";
 		Part result = null;
 		// TODO: mainly do the work with public methods
+		// Start at the beginning of the list with the specified function
+	    start(function);
+	    // If there's no part with the specified function, return null
+	    if (!isCurrent()) {
+	        return null;
+	    }
+	    // Get the current part
+	    result = getCurrent();
+
+	    // Remove the current part
+	    removeCurrent();
+
 		assert wellFormed() : "invariant broken by removePart";
 		return result;
 	}
@@ -436,6 +462,22 @@ public class LinkedPartSeq implements Robot, Cloneable {
 
 	@Override // required
 	public Part getPart(String func, int index) {
+		// Start at the beginning of the list with the specified function
+		if (index < 0) throw new IllegalArgumentException("Index can't be negative");
+	    start(func);
+
+	    // Traverse the list to the specified index
+	    int currentIndex = 0;
+	    while (currentIndex < index && isCurrent()) {
+	        advance();
+	        currentIndex++;
+	    }
+	    // Return the part at the specified index if it exists
+	    if (currentIndex == index && isCurrent()) {
+	        Part part = getCurrent();
+	        assert wellFormed() : "invariant broken by getPart";
+	        return part;
+	    }
 		return null;
 	}
 	
