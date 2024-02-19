@@ -252,6 +252,42 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public void removeCurrent() {
 		// TODO: Don't forget to check the invariant before and after!
 		// Hint: this is a constant-time method.  Rely on the invariant.
+		assert wellFormed() : "invariant broken in removeCurrent";
+	    // Check if there is a current part before removing
+	    if (!isCurrent()) {
+	        throw new IllegalStateException("No current Part to remove.");
+	    }
+	    
+	    // If the current node is the head, move head to the next node
+	    if (precursor == null) {
+	        head = head.next;
+	        Node lag = null;
+	        if (head != null && function != null) {
+	        	 for (Node cur = head; cur != null; lag = cur,cur = cur.next) {
+	        		 if (this.function.equals(cur.function)) {
+	 		    		break;
+	 		    	}
+	        	 }
+	        }
+	        precursor = lag;
+	        if (manyNodes == 1) {
+	        	tail = null;
+	        }
+	    } else {
+	        precursor.next = precursor.next.next; 
+	        Node cur = precursor == null ? head : precursor.next;
+		    if (cur != null && function != null && !function.equals(cur.function)) {
+		    	precursor = tail;
+		    }
+		    // Update the tail if the removed node was the last node
+		    if (precursor != null && precursor.next == null) {
+		        tail = precursor;
+		    }
+	    }
+	    
+
+	    manyNodes--; // Decrement the count of nodes
+	    assert wellFormed() : "invariant broken by removeCurrent";
 	}
 	
 	/**
