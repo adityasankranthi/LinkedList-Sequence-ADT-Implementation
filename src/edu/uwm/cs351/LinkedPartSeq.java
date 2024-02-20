@@ -15,7 +15,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
         return false;
     }
 
-    // TODO data structure: Node class and fields
     private Node head;
     private Node precursor;
     private Node tail;
@@ -44,7 +43,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
             }
         }
 
-        // TODO
         // 2. The precursor field is null or points to a node in the list.
         if (precursor != null) {
             Node temp = head;
@@ -103,7 +101,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
      * Create an empty robot..
      */
     public LinkedPartSeq() {
-        //TODO.  Make sure that you assert the invariant at the end only
         head = null;
         precursor = null;
         tail = null;
@@ -159,8 +156,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
 
 
     /// Cursor methods
-
-    // TODO Implement model field "cursor" (i.e., "getCursor()")
     private Node getCursor() {
         if (precursor == null) return head;
         else return precursor.next;
@@ -206,7 +201,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
      */
     public boolean isCurrent() {
         assert wellFormed() : "invariant broken in isCurrent";
-        // TODO: one liner since we can assume the invariant
         return getCursor() != null;
     }
 
@@ -217,7 +211,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
      * @return the current Part, never null.
      */
     public Part getCurrent() {
-        // TODO: simple since we can assume the invariant
         assert wellFormed() : "invariant broken in getCurrent";
         if (!isCurrent()) throw new IllegalStateException("no current element");
         assert wellFormed() : "invariant broken by getCurrent";
@@ -321,7 +314,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
      */
     public void addBefore(Part p) {
         assert wellFormed() : "invariant broken in addBefore";
-        // TODO
         if (p == null) throw new NullPointerException("Part can't be null");
         if (function == null) throw new IllegalStateException("function is not defined or is null");
         // Create a new node with the provided part
@@ -360,7 +352,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
      * @param p part to add at this spot, must not be null.
      */
     public void addAfter(Part p) {
-        // TODO: (remember the invariant!)
         assert wellFormed() : "invariant broken in addAfter";
         if (p == null) throw new NullPointerException("part can't be null");
         if (function == null) throw new IllegalStateException("function is not defined or is null");
@@ -441,7 +432,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
     @Override // required
     public boolean addPart(String function, Part part) {
         assert wellFormed() : "invariant broken in addPart";
-        // TODO: mainly do the work with public methods
         if (function == null || part == null) throw new NullPointerException("function or part is null");
         start(function);
         while (isCurrent()) {
@@ -456,7 +446,6 @@ public class LinkedPartSeq implements Robot, Cloneable {
     public Part removePart(String function) {
         assert wellFormed() : "invariant broken in removePart";
         Part result = null;
-        // TODO: mainly do the work with public methods
         // Start at the beginning of the list with the specified function
         start(function);
         // If there's no part with the specified function, return null
