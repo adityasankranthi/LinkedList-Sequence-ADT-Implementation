@@ -281,9 +281,17 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	        }
 	    } else {
 	        precursor.next = precursor.next.next; 
-	        Node cur = precursor == null ? head : precursor.next;
+	        Node cur = getCursor();
 		    if (cur != null && function != null && !function.equals(cur.function)) {
-		    	precursor = tail;
+		    	Node lag = null;
+	    		if (head != null && function != null) {
+	    		    for (; cur != null; lag = cur, cur = cur.next) {
+	    		    	if (this.function.equals(cur.function)) {
+	    		    		break;
+	    		    	}
+	    		    }
+	    		}
+	    	    if (lag!=null) precursor = lag;
 		    }
 		    // Update the tail if the removed node was the last node
 		    if (precursor != null && precursor.next == null) {
@@ -347,6 +355,7 @@ public class LinkedPartSeq implements Robot, Cloneable {
 	public void addAfter(Part p) {
 		// TODO: (remember the invariant!)
 		assert wellFormed() : "invariant broken in addAfter";
+		if (p == null) throw new NullPointerException("part can't be null");
 		if (function == null) throw new IllegalStateException("function is not defined or is null");
 
 	    // Create a new node with the provided part
